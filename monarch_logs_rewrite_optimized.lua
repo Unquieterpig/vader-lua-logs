@@ -1,5 +1,5 @@
 -- local variables for API functions. any changes to the line below will be lost on re-generation
-local cheat_set_event_callback, color_new, config_get, config_set, cvar_console_print, engine_get_local_player_index, engine_get_player_for_user_id, engine_get_player_info, engine_get_screen_size, engine_is_in_game, event_register_event, globals_frametime, globals_realtime, math_floor, render_draw_text, render_text_size, surface_create_font, table_insert, table_remove, ui_new_checkbox, ui_new_slider_int, pairs, utils_get_player_data = cheat.set_event_callback, color.new, config.get, config.set, cvar.console_print, engine.get_local_player_index, engine.get_player_for_user_id, engine.get_player_info, engine.get_screen_size, engine.is_in_game, event.register_event, globals.frametime, globals.realtime, math.floor, render.draw_text, render.text_size, surface.create_font, table.insert, table.remove, ui.new_checkbox, ui.new_slider_int, pairs, utils.get_player_data
+local cheat_set_event_callback, color_new, config_get, config_load, config_save, config_set, cvar_console_print, engine_get_local_player_index, engine_get_player_for_user_id, engine_get_player_info, engine_get_screen_size, engine_is_in_game, event_register_event, globals_frametime, globals_realtime, math_floor, render_draw_text, render_text_size, surface_create_font, table_insert, table_remove, ui_new_checkbox, ui_new_slider_int, ui_new_text, ipairs, utils_get_player_data = cheat.set_event_callback, color.new, config.get, config.load, config.save, config.set, cvar.console_print, engine.get_local_player_index, engine.get_player_for_user_id, engine.get_player_info, engine.get_screen_size, engine.is_in_game, event.register_event, globals.frametime, globals.realtime, math.floor, render.draw_text, render.text_size, surface.create_font, table.insert, table.remove, ui.new_checkbox, ui.new_slider_int, ui.new_text, ipairs, utils.get_player_data
 
 -- Global settings 😃
 local screenSize = engine_get_screen_size()
@@ -28,6 +28,11 @@ config_set("screenlog_speed_slider", 12)
 -- Time on screen
 ui_new_slider_int("screenlog_time_slider", "Screen logs expire time", "1", "10")
 config_set("screenlog_time_slider", 5)
+
+-- Config saving
+ui_new_text("\n")
+ui_new_checkbox("savelog_cb", "Save log settings")
+ui_new_checkbox("loadlog_cb", "Load log settings")
 
 -- HELPER FUNCTIONS BEGIN
 
@@ -71,7 +76,7 @@ local animate = {
 local multitext = {
 	-- Takes a table of text to render
 	render = function(x, y, table, alpha)
-		for _, item in pairs(table) do
+		for _, item in ipairs(table) do
 			if not config_get("logfont_cb") then
 				render_draw_text(x + 1, y + 1, hitlogFont, item.text, false, color_new(5, 5, 5, 200 * alpha)) -- ghetto dropshadow, until exon fixes fonts
 				render_draw_text(x, y, hitlogFont, item.text, false, color_new(item.color.r, item.color.g, item.color.b, 255 * alpha))
@@ -89,7 +94,7 @@ local multitext = {
 	-- Measures a table of text as a whole
 	measure = function(table) -- only measures X cause we don't need dat Y
 		local textSize_x = 0
-		for _, item in pairs(table) do
+		for _, item in ipairs(table) do
 			if not config_get("logfont_cb") then
 				textSize_x = textSize_x + render_text_size(hitlogFont, item.text).x
 			else
@@ -101,6 +106,30 @@ local multitext = {
 	end,
 }
 
+local cfg_management = {
+	save = function()
+		config_set("savelog_cb", false)
+		config_save()
+		add_log(
+		{text = "[", color = {r = 255, g = 255, b = 255}},
+		{text = "monarch logs", color = {r = 175, g = 105, b = 239}},
+		{text = "] ", color = {r = 255, g = 255, b = 255}},
+		{text = "config saved", color = {r = 255, g = 255, b = 255}}
+		)
+	end,
+	
+	load = function()
+		config_set("loadlog_cb", false)
+		config_load()
+		add_log(
+		{text = "[", color = {r = 255, g = 255, b = 255}},
+		{text = "monarch logs", color = {r = 175, g = 105, b = 239}},
+		{text = "] ", color = {r = 255, g = 255, b = 255}},
+		{text = "config loaded", color = {r = 255, g = 255, b = 255}}
+		)
+	end,
+}
+
 -- HELPER FUNCTIONS END
 
 -- Start of the big bad logs 🤩
@@ -108,7 +137,7 @@ local _update_screenlog = function()
 	
     local y = (screenSize.y / 1.75) + config_get("screenlog_y_slider")
 
-    for index, info in pairs(notify) do
+    for index, info in ipairs(notify) do
         if info == nil then return end
 			
 		if #notify > 6 then
@@ -263,6 +292,10 @@ local drawthatbiddy = function()
 	if not engine_is_in_game() then return end
 	
 	if config_get("screenlog_cb") then _update_screenlog() end
+	
+	-- config management loops here
+	if config_get("savelog_cb") then cfg_management.save() end
+	if config_get("loadlog_cb") then cfg_management.load() end
 end
 
 add_log(
