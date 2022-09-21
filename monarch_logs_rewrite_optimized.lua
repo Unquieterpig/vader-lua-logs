@@ -13,6 +13,7 @@ local hitgroup_names = { "body", "head", "chest", "stomach", "left arm", "right 
 -- Vader menu settings
 -- Da big switch
 ui_new_checkbox("screenlog_cb", "Screen logs")
+config_set("screenlog_cb", true)
 ui_new_checkbox("consolelog_cb", "Console logs")
 -- Want bold?
 ui_new_checkbox("logfont_cb", "Render bold font")
@@ -47,7 +48,7 @@ end
 --]]
 local add_log = function(...) 
 	local temp_table = { display = {...}, metadata = {alpha = 0, state = 0, timer = globals_realtime()} }
-	
+
 	table_insert(notify, temp_table)
 end
 
@@ -149,7 +150,12 @@ local _update_screenlog = function()
 		
 		local multiTextX = multitext.measure(info.display)
 
-		multitext.render(screenSize.x / 2 - multiTextX / 2 + math_floor(config_get("screenlog_spacing_slider") * info.metadata.state), y, info.display, info.metadata.alpha)
+		multitext.render(
+				screenSize.x / 2 - multiTextX / 2 + math_floor(config_get("screenlog_spacing_slider") * info.metadata.state), 
+				y, 
+				info.display, 
+				info.metadata.alpha
+				)
 
 		y = y + math_floor(config_get("screenlog_spacing_slider") * info.metadata.alpha)
 
@@ -160,13 +166,14 @@ local _update_screenlog = function()
 end
 
 local function hurtthatbiddy(game_event) -- for grenades only!
+	local hitgroup = game_event:get_int("hitgroup")
+	if hitgroup ~= 0 then return end -- nope out if not a nade
+	
 	local attackerIndex = engine_get_player_for_user_id(game_event:get_int("attacker"))
 	local localIndex = engine_get_local_player_index()
 	local victimIndex = engine_get_player_for_user_id(game_event:get_int("userid"))
 	
 	if attackerIndex == localIndex and victimIndex ~= localIndex then -- check that we are the attacker and not the victim
-		local hitgroup = game_event:get_int("hitgroup")
-		if hitgroup ~= 0 then return end -- nope out if not a nade
 		
 		local group = hitgroup_names[hitgroup + 1] or "?"
 		local damage = game_event:get_int("dmg_health")
