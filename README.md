@@ -1,4 +1,5 @@
 # vader-lua-logs
-Lua script for vader.tech
+Old version of the hitlogs, these don't have any miss logs. Very primative!
+Uploaded for archive purposes.
 
-![preview](https://user-images.githubusercontent.com/8474221/184564519-e6375f89-1e18-4bfe-b7ac-295f1940a22d.png)
+![legacy](https://user-images.githubusercontent.com/8474221/191587487-a7fce639-7bc1-408a-8000-e007d0a68312.png)
