@@ -1,5 +1,5 @@
 -- local variables for API functions. any changes to the line below will be lost on re-generation
-local cheat_set_event_callback, color_new, config_get, config_load, config_save, config_set, cvar_console_print, engine_get_local_player_index, engine_get_player_for_user_id, engine_get_player_info, engine_get_screen_size, engine_is_in_game, event_register_event, globals_frametime, globals_realtime, math_floor, render_draw_text, render_text_size, surface_create_font, table_insert, table_remove, ui_new_checkbox, ui_new_slider_int, ui_new_text, ipairs, utils_get_player_data = cheat.set_event_callback, color.new, config.get, config.load, config.save, config.set, cvar.console_print, engine.get_local_player_index, engine.get_player_for_user_id, engine.get_player_info, engine.get_screen_size, engine.is_in_game, event.register_event, globals.frametime, globals.realtime, math.floor, render.draw_text, render.text_size, surface.create_font, table.insert, table.remove, ui.new_checkbox, ui.new_slider_int, ui.new_text, ipairs, utils.get_player_data
+local cheat_set_event_callback, color_new, config_get, config_load, config_save, config_set, cvar_console_print, engine_get_local_player_index, engine_get_player_for_user_id, engine_get_player_info, engine_get_screen_size, engine_is_in_game, event_register_event, globals_frametime, globals_realtime, math_floor, render_draw_text, render_text_size, surface_create_font, table_insert, table_remove, ui_new_checkbox, ui_new_slider, ui_new_text, ipairs, utils_get_player_data = cheat.set_event_callback, color.new, config.get, config.load, config.save, config.set, cvar.console_print, engine.get_local_player_index, engine.get_player_for_user_id, engine.get_player_info, engine.get_screen_size, engine.is_in_game, event.register_event, globals.frametime, globals.realtime, math.floor, render.draw_text, render.text_size, surface.create_font, table.insert, table.remove, ui.new_checkbox, ui.new_slider, ui.new_text, ipairs, utils.get_player_data
 
 -- Global settings 😃
 local screenSize = engine_get_screen_size()
@@ -18,16 +18,16 @@ ui_new_checkbox("consolelog_cb", "Console logs")
 -- Want bold?
 ui_new_checkbox("logfont_cb", "Render bold font")
 -- Offset for da logs!
-ui_new_slider_int("screenlog_y_slider", "Screen logs Y offset", "0", "240")
+ui_new_slider("screenlog_y_slider", "Screen logs Y offset", 0, 240, "%1.fpx")
 config_set("screenlog_y_slider", 160)
 -- Da space between logs!!1!
-ui_new_slider_int("screenlog_spacing_slider", "Screen logs spacing", "0", "30")
+ui_new_slider("screenlog_spacing_slider", "Screen logs spacing", 0, 30, "%1.fpx")
 config_set("screenlog_spacing_slider", 15)
 -- xXAnimationSpeedXx
-ui_new_slider_int("screenlog_speed_slider", "Screen logs animation speed", "4", "24")
+ui_new_slider("screenlog_speed_slider", "Screen logs animation speed", 4, 24, "%1.fs")
 config_set("screenlog_speed_slider", 12)
 -- Time on screen
-ui_new_slider_int("screenlog_time_slider", "Screen logs expire time", "1", "10")
+ui_new_slider("screenlog_time_slider", "Screen logs expire time", 1, 10, "%1.fs")
 config_set("screenlog_time_slider", 5)
 
 -- Config saving
@@ -247,7 +247,7 @@ local function shotthatbiddy(shot_data)
 				{text = "Hit ", color = {r = 255, g = 255, b = 255}},
 				{text = strVictim, color = {r = 238, g = 210, b = 2}},
 				{text = " in the ", color = {r = 255, g = 255, b = 255}},
-				{text = strClHitbox, color = {r = 238, g = 210, b = 2}},
+				{text = strSvHitbox, color = {r = 238, g = 210, b = 2}},
 				{text = " for ", color = {r = 255, g = 255, b = 255}},
 				{text = intSvDamage, color = {r = 238, g = 210, b = 2}},
 				{text = " damage (hitbox mismatch ", color = {r = 255, g = 255, b = 255}},
